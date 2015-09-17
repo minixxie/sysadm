@@ -2,7 +2,7 @@
 
 scriptPath=$(cd `dirname $0`; pwd)
 
-if [ `pwd` != $HOME ]
+if [ "$scriptPath" != $HOME ]
 then
 	cp -pf $0 ~/
 fi
