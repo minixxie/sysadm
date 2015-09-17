@@ -41,9 +41,9 @@ then
 dialog --backtitle "System Administration Tool" --title "Create Mongo Database and DB user" \
 --form "\n* siteUserAdmin is for login, if login is not needed:\n  set both siteUserAdmin & siteUserAdmin to empty\n* Will create DB user (password is randomly generated)\n* Will create DB name" 25 70 16 \
 "siteUserAdmin(user):" 1 1 "$siteUserAdmin_user" 1 25 35 30 \
-"siteUserAdmin(pass):" 2 1 "$siteUserAdmin_pass" 2 25 35 30 \
+"siteUserAdmin(pass):" 2 1 "$siteUserAdmin_pass" 2 25 35 80 \
 "DB user(user):" 3 1 "$dbUser_user" 3 25 35 30 \
-"DB user(pass):" 4 1 "$dbUser_pass" 4 25 35 30 \
+"DB user(pass):" 4 1 "$dbUser_pass" 4 25 35 80 \
 "DB name:" 5 1 "$dbName" 5 25 35 30 \
 "role:" 6 1 "$role" 6 25 35 30 \
 2> $tmpfile
@@ -63,6 +63,8 @@ $role
 EOF
 
 fi
+
+exitCode=1
 
 if [ x"$okDirectly" == xOK ]
 then
@@ -100,9 +102,11 @@ db.dropUser("$dbUser_user");
 		]
 	});
 EOF
+	echo "$dbUser_pass" >&2
+	exitCode=0
 	
 fi
 
 rm -f $tmpfile
 
-echo "$dbUser_pass"
+exit $exitCode  #0 - OK and created, !0 - OK was not pressed
