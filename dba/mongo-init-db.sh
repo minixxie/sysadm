@@ -1,5 +1,15 @@
 #!/bin/bash
 
+dialog=$(which dialog)
+if [ x$dialog == x ]
+then
+	echo "Please do this first:"
+	echo "Redhat/CentOS: sudo yum -y install dialog"
+	echo "Ubuntu/Debian: sudo apt-get install dialog"
+	echo "Mac:           brew install dialog"
+	exit 1
+fi
+
 md5=$(if [ `uname` == Darwin ] ; then echo md5 ; else echo md5sum ; fi)
 
 siteUserAdmin_user="$1"
