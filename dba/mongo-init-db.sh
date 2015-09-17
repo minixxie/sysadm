@@ -104,3 +104,5 @@ EOF
 fi
 
 rm -f $tmpfile
+
+echo "$dbUser_pass"
