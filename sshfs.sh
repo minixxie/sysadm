@@ -7,4 +7,4 @@ then
 	cp -pf $0 ~/
 fi
 
-mkdir -p ~/sshfs && touch ~/host/NOT_MOUNTED && sshfs -o nonempty $USER@192.168.56.1:~/ ~/host
+mkdir -p ~/host && touch ~/host/NOT_MOUNTED && sshfs -o nonempty $USER@192.168.56.1:~/ ~/host
