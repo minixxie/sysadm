@@ -18,4 +18,4 @@ echo "$section"
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash - >> /var/log/installserver.log 2>&1
 sudo aptitude -q -y install nodejs npm >> /var/log/installserver.log 2>&1
 sudo npm install pm2 -g >> /var/log/installserver.log 2>&1
-
+sudo aptitude -q -y install libkrb5-dev >> /var/log/installserver.log 2>&1  #for npm to install kerberos
