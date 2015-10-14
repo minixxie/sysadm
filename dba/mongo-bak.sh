@@ -121,7 +121,7 @@ fi
 else
 
 pushd .
-$mongodumpCommand --out "$1" && cd "$1" && tar czf $outputFolder.tar.gz $outputFolder
+$mongodumpCommand --out "$1"/"$outputFolder" && cd "$1" && tar czf $outputFolder.tar.gz $outputFolder
 rm -rf $outputFolder
 popd
 echo "$1/$outputFolder.tar.gz is ready"
