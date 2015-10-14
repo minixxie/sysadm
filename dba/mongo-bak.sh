@@ -2,7 +2,7 @@
 
 if [ x"$1" == x -o x"$MONGO_URL" == x ]
 then
-	echo "usage: MONGO_URL=mongo://user:pass@host:port/db [SSH_TUNNEL=ssh://user:pass@host:port] $0 /path/to/output/folder/"
+	>&2 echo "usage: MONGO_URL=mongo://user:pass@host:port/db [SSH_TUNNEL=ssh://user:pass@host:port] $0 /path/to/output/folder/"
 	exit 1
 fi
 
@@ -66,7 +66,7 @@ function uri_parser() {
 
 moment=$(date -u +"%Y%m%d-%H%M%S+0000")
 
-uri_parser $MONGO_URL || { echo "Malformed MONGO_URL"; exit 1; }
+uri_parser $MONGO_URL || { >&2 echo "Malformed MONGO_URL"; exit 1; }
 
 mongoSchema="$uri_schema"
 mongoUser="$uri_user"
@@ -88,7 +88,7 @@ mongodumpCommand="mongodump --username $mongoUser --password $mongoPass --db $mo
 if [ x"$SSH_TUNNEL" != x ]
 then
 
-uri_parser $SSH_TUNNEL || { echo "Malformed SSH_TUNNEL"; exit 1; }
+uri_parser $SSH_TUNNEL || { >&2 echo "Malformed SSH_TUNNEL"; exit 1; }
 
 sshSchema="$uri_schema"
 sshUser="$uri_user"
@@ -114,8 +114,8 @@ then
 	if [ $? -eq 0 ] #scp successful
 	then
 		$sshCommand -t "rm -f /tmp/$outputFolder.tar.gz && rm -rf /tmp/$outputFolder"
-		echo "$1/$outputFolder.tar.gz is ready"
-		>&2 echo "$1/$outputFolder.tar.gz"
+		>&2 echo "$1/$outputFolder.tar.gz is ready"
+		echo "$1/$outputFolder.tar.gz"
 	fi
 fi
 
@@ -125,8 +125,8 @@ pushd .
 $mongodumpCommand --out "$1"/"$outputFolder" && cd "$1" && tar czf $outputFolder.tar.gz $outputFolder
 rm -rf $outputFolder
 popd
-echo "$1/$outputFolder.tar.gz is ready"
->&2 echo "$1/$outputFolder.tar.gz"
+>&2 echo "$1/$outputFolder.tar.gz is ready"
+echo "$1/$outputFolder.tar.gz"
 
 fi
 
