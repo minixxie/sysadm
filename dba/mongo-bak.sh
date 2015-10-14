@@ -121,10 +121,10 @@ fi
 
 else
 
-pushd . 2>/dev/null
+pushd . >/dev/null
 $mongodumpCommand --out "$1"/"$outputFolder" && cd "$1" && tar czf $outputFolder.tar.gz $outputFolder
 rm -rf $outputFolder
-popd 2>/dev/null
+popd >/dev/null
 >&2 echo "$1/$outputFolder.tar.gz is ready"
 echo "$1/$outputFolder.tar.gz"
 
