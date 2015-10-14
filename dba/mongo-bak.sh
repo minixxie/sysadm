@@ -115,6 +115,7 @@ then
 	then
 		$sshCommand -t "rm -f /tmp/$outputFolder.tar.gz && rm -rf /tmp/$outputFolder"
 		echo "$1/$outputFolder.tar.gz is ready"
+		>&2 echo "$1/$outputFolder.tar.gz"
 	fi
 fi
 
@@ -125,6 +126,7 @@ $mongodumpCommand --out "$1"/"$outputFolder" && cd "$1" && tar czf $outputFolder
 rm -rf $outputFolder
 popd
 echo "$1/$outputFolder.tar.gz is ready"
+>&2 echo "$1/$outputFolder.tar.gz"
 
 fi
 
