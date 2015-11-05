@@ -16,5 +16,8 @@ brew install docker boot2docker docker-compose docker-machine
 brew install git Caskroom/cask/gitx
 brew install node npm #node.js
 
+# golang
+brew install golang
+
 #brew install mariadb
 #sudo apt-get -f install nginx

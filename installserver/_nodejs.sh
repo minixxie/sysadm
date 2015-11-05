@@ -22,5 +22,7 @@ echo "$section"
 
 # http://stackoverflow.com/questions/32542615/how-to-upgrade-node-js-from-0-12-version-to-4-0-version-on-windows-and-ubuntu
 curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash - >> /var/log/installserver.log 2>&1
-sudo apt-get install -y nodejs >> /var/log/installserver.log 2>&1
+sudo apt-get install -y nodejs npm >> /var/log/installserver.log 2>&1
 
+sudo npm install pm2 -g
+sudo pm2 install pm2-logrotate
