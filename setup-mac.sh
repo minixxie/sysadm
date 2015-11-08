@@ -21,3 +21,7 @@ brew install golang
 
 #brew install mariadb
 #sudo apt-get -f install nginx
+
+# ansible
+sudo easy_install pip
+sudo pip install ansible

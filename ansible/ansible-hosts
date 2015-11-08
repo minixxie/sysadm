@@ -1,0 +1,7 @@
+[web]
+#192.168.56.101	ansible_user=sysadm
+192.168.56.101	ansible_ssh_user=sysadm
+
+[local]
+#127.0.0.1	ansible_user=simon.tse
+#127.0.0.1	ansible_ssh_user=simon.tse

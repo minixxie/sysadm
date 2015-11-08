@@ -1,0 +1,4 @@
+# requirements for ansible-galaxy to install
+#- src: angstwad.docker_ubuntu
+- src: franklinkim.docker
+- src: franklinkim.docker-compose

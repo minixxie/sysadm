@@ -1,0 +1,14 @@
+#- name: Install Docker on ALL servers
+#  hosts: all
+#  sudo: yes
+#  roles:
+#    - role: angstwad.docker_ubuntu
+
+- name: Install Docker-compose on ALL servers
+  hosts: all
+  sudo: yes
+  roles:
+    - franklinkim.docker
+    - franklinkim.docker-compose
+  vars:
+    docker_compose_version: 1.4.0
