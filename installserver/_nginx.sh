@@ -15,7 +15,7 @@ sudo chmod 666 /var/log/installserver.log
 section="# ----- [ Nginx ] ----- #"
 echo "$section"
 
-if [ x$USE_DOCKER != x -a $USE_DOCKER -eq 1 ]
+if [ x$USE_DOCKER != x -a x$USE_DOCKER == x1 ]
 then
 
 sudo docker pull richarvey/nginx-php-fpm:latest >> /var/log/installserver.log 2>&1
