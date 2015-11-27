@@ -19,7 +19,11 @@ mongoUser="$uri_user"
 mongoPass="$uri_password"
 mongoHost="$uri_host"
 mongoPort=${uri_port:-27017}
-mongoPath=$(basename $uri_path)
+mongoPath=$(basename "$uri_path")
+if [ x"$mongoPath" == x"/" ]
+then
+	mongoPath=""
+fi
 
 #echo "mongoSchema: $mongoSchema"
 #echo "mongoUser: $mongoUser"
