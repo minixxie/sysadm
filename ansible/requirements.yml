@@ -2,3 +2,5 @@
 #- src: angstwad.docker_ubuntu
 - src: franklinkim.docker
 - src: franklinkim.docker-compose
+- src: geerlingguy.gitlab
+- src: kbrebanov.openldap

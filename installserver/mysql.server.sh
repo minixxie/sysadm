@@ -29,4 +29,7 @@ sudo sed -i "s/^bind-address.*/bind-address\t\t= 0.0.0.0/" /etc/mysql/my.cnf >> 
 # set default timezone as UTC under [mysqld] section:
 sudo sed -i '/\[mysqld\]/a\default_time_zone = UTC' /etc/mysql/my.cnf >> /var/log/installserver.log 2>&1
 sudo service mysql restart >> /var/log/installserver.log 2>&1
+exit 0
 
+sudo docker pull mysql
+sudo docker run --name mysql -e MYSQL_ROOT_PASSWORD=$mysqlRootPass -d mysql:latest

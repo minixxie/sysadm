@@ -18,6 +18,9 @@ sudo apt-get update >> /var/log/installserver.log 2>&1
 sudo apt-get -q -y install aptitude >> /var/log/installserver.log 2>&1
 sudo aptitude update >> /var/log/installserver.log 2>&1
 sudo aptitude -q -y install openssh-server >> /var/log/installserver.log 2>&1
+
+sudo add-apt-repository -q -y ppa:git-core/ppa
+sudo apt-get update
 sudo aptitude -q -y install git tig >> /var/log/installserver.log 2>&1
 
 "$scriptPath"/_ntp.sh

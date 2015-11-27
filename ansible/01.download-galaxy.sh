@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo ansible-galaxy install -r requirements.yml
+sudo ansible-galaxy install --force -r requirements.yml
