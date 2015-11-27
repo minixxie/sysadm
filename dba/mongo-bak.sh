@@ -57,13 +57,14 @@ sshPath=$(basename "$uri_path")
 sshCommand="ssh $sshUser@$sshHost -p $sshPort"
 scpCommand="scp -P $sshPort $sshUser@$sshHost"
 
-$sshCommand -t "$mongodumpCommand --out /tmp/$outputFolder && cd /tmp/ && tar czf $outputFolder.tar.gz $outputFolder"
+backupTmpFolder=$($sshCommand -t "tmp=\$(mktemp -d /tmp/XXXXXX); $mongodumpCommand --out \$tmp/$outputFolder > /dev/null && cd \$tmp/ && tar czf $outputFolder.tar.gz $outputFolder && echo -n \$tmp")
+
 if [ $? -eq 0 ] #dump successful
 then
-	$scpCommand:/tmp/$outputFolder.tar.gz "$1"
+	$scpCommand:$backupTmpFolder/$outputFolder.tar.gz "$1"
 	if [ $? -eq 0 ] #scp successful
 	then
-		$sshCommand -t "rm -f /tmp/$outputFolder.tar.gz && rm -rf /tmp/$outputFolder"
+		$sshCommand -t "rm -rf $backupTmpFolder"
 		>&2 echo "$1/$outputFolder.tar.gz is ready"
 		echo "$1/$outputFolder.tar.gz"
 	fi
