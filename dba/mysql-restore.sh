@@ -8,7 +8,7 @@ then
 	exit 1
 fi
 
-. "$scriptPath"/lib/uri_parser #import uri_parser function
+. "$scriptPath"/../lib/uri_parser #import uri_parser function
 
 if [ x"$MYSQL_URI" == x ]
 then
