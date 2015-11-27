@@ -20,7 +20,11 @@ else
     mysqlPass="$uri_password"
     mysqlHost="$uri_host"
     mysqlPort=${uri_port:-3306}
-    mysqlPath=$(basename $uri_path)
+    mysqlPath=$(basename "$uri_path")
+	if [ x"$mysqlPath" == x"/" ]
+	then
+		mysqlPath=""
+	fi
 
 	mysql="mysql -h $mysqlHost -u $mysqlUser -p$mysqlPass $mysqlPath"
 fi
