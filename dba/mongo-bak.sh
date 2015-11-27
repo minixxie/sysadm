@@ -45,7 +45,7 @@ sshUser="$uri_user"
 #sshPass="$uri_password"
 sshHost="$uri_host"
 sshPort=${uri_port:-22}
-sshPath=$(basename $uri_path)
+sshPath=$(basename "$uri_path")
 
 #echo "sshSchema: $sshSchema"
 #echo "sshUser: $sshUser"
