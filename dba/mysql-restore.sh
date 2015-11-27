@@ -1,6 +1,7 @@
 #!/bin/bash
 
 scriptPath=$(cd `dirname $0`; pwd)
+. "$scriptPath"/../lib/uri_parser #import uri_parser function
 
 if [ x"$1" = x ]
 then
@@ -8,7 +9,6 @@ then
 	exit 1
 fi
 
-. "$scriptPath"/../lib/uri_parser #import uri_parser function
 
 if [ x"$MYSQL_URI" == x ]
 then
