@@ -41,6 +41,7 @@ sudo docker run \
   --volume=/etc/mongod.conf:/mongod.conf \
   --name=mongodb \
   mongo mongod -f /mongod.conf
+sudo apt-get -q -y install mongodb-clients
 
 else #USE_DOCKER=0 ####################################################
 
