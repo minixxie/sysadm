@@ -1,0 +1,15 @@
+dn: uid=example,ou=People,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: example
+sn: Chan
+givenName: Example
+cn: Example Chan
+displayName: Example Chan
+uidNumber: 8000
+gidNumber: 8000
+userPassword: hello123
+gecos: Example Chan
+loginShell: /bin/bash
+homeDirectory: /home/example.chan
