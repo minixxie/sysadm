@@ -105,3 +105,9 @@ sudo ln -sfn /srv/gitlab/config/nginx.conf /etc/nginx/sites-available/$GIT_HOSTN
 sudo ln -sfn /etc/nginx/sites-available/$GIT_HOSTNAME /etc/nginx/sites-enabled/$GIT_HOSTNAME
 sudo service nginx reload
 
+echo -n "Configure ldap usage? (y/n) "
+read configLdap
+if [ x"$configLdap" == x"Y" -o x"$configLdap" == x"y" ]
+then
+	sudo docker exec -it gitlab vi +/ldap_enabled /etc/gitlab/gitlab.rb 
+fi

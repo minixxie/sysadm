@@ -25,6 +25,8 @@ sudo aptitude -q -y install imagemagick mysql-client zip unzip tofrodos jhead \
 	httperf \
 	>> /var/log/installserver.log 2>&1
 
+sudo pip install shyaml #https://github.com/0k/shyaml
+
 #	nodejs 
 #	libboost-system1.48.0 \
 #	libboost1.48-all-dev libev4 libev-dev libcurl4-gnutls-dev libjsoncpp-dev 
