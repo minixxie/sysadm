@@ -143,7 +143,8 @@ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block
     active_directory: true
     allow_username_or_email_login: true
     block_auto_created_users: false
-    base: 'ou=Users,$DC'
+    base: 'cn=IT,ou=Groups,$DC' #allow users in IT group only
+#    base: 'ou=Users,$DC' #allow all users
     user_filter: ''
     ## EE only
     group_base: ''
@@ -155,6 +156,7 @@ echo -n "Configure ldap usage? (y/n) "
 read configLdap
 if [ x"$configLdap" == x"Y" -o x"$configLdap" == x"y" ]
 then
+	# open gitlab config file (ruby source code)
 	sudo docker exec -it gitlab vi +/ldap_enabled /etc/gitlab/gitlab.rb 
 	sudo docker restart gitlab 
 fi
