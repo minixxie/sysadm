@@ -143,11 +143,10 @@ gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block
     active_directory: true
     allow_username_or_email_login: true
     block_auto_created_users: false
-    base: 'cn=IT,ou=Groups,$DC' #allow users in IT group only
-#    base: 'ou=Users,$DC' #allow all users
+    base: 'ou=Users,$DC' #allow all users
     user_filter: ''
     ## EE only
-    group_base: ''
+    #group_base: 'cn=IT,ou=Groups,$DC' #allow users in IT group only
     admin_group: ''
     sync_ssh_keys: false
 EOS

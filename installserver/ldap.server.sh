@@ -48,6 +48,20 @@ sudo sed -e -i "s/\$server->setValue('server','host'.*$/\$server->setValue('serv
 sudo sed -i "s/\$servers->setValue('server','base'.*/\$servers->setValue('server','base',array('$DC'));/" /etc/phpldapadmin/config.php
 sudo sed -i "s/\$servers->setValue('login','bind_id'.*/\$servers->setValue('login','bind_id','cn=admin,$DC');/" /etc/phpldapadmin/config.php
 sudo sed -i "s/^.*\$config->custom->appearance\['hide_template_warning'\].*$/\$config->custom->appearance\['hide_template_warning'\] = true;/" /etc/phpldapadmin/config.php
+sudo sed -i "s/^.*\$servers->setValue('auto_number','min',.*$/\$servers->setValue('auto_number','min',array('uidNumber'=>8001,'gidNumber'=>7001));/" /etc/phpldapadmin/config.php
+# http://stackoverflow.com/questions/20673186/getting-error-for-setting-password-field-when-creating-generic-user-account-phpl
+sudo sed -i "s/\$default = \$this->getServer()->getValue('appearance','password_hash.*$/\$default = \$this->getServer()->getValue('appearance','password_hash_custom');/" /usr/share/phpldapadmin/lib/TemplateRender.php
+
+# add a change password page for normal user : http://technology.mattrude.com/2010/11/ldap-php-change-password-webpage/
+sudo rm -rf /usr/share/phpldapadmin/htdocs/passwd
+cd /usr/share/phpldapadmin/htdocs/ ; sudo git clone https://gist.github.com/mattrude/657334 passwd
+sudo mv /usr/share/phpldapadmin/htdocs/passwd/changepassword.php /usr/share/phpldapadmin/htdocs/passwd/index.php
+sudo sed -i "s/\$dn = \"ou=.*/\$dn = \"ou=Users,$DC\";/" /usr/share/phpldapadmin/htdocs/passwd/index.php 
+grep "Change Password For User" /usr/share/phpldapadmin/htdocs/welcome.php 2>&1 >/dev/null
+if [ $? -ne 0 ]
+then
+	sudo sed -i  "/if (\$_SESSION\[APPCONFIG\]->isCommandAvailable('cmd','oslinks')) {/a\    printf('<a href=\"/passwd/\" target=\"_blank\" style=\"color:orange;\">Change Password For User</a> | ');" /usr/share/phpldapadmin/htdocs/welcome.php 
+fi
 
 
 if ! [ -f /etc/ssl/certs/$LDAP_DOMAIN.crt ]
