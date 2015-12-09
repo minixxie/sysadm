@@ -8,19 +8,25 @@ then
 	exit 1
 fi
 
-if [ x"$DOMAIN" == x ]
+if [ x"$LDAP_DOMAIN" == x -o x"$FIRST_USER_FIRST_NAME" == x -o x"$FIRST_USER_LAST_NAME" == x ]
 then
-	DOMAIN=example.com
+	echo "usage: sudo LDAP_DOMAIN=example.com FIRST_USER_FIRST_NAME=Simon FIRST_USER_LAST_NAME=Tse $0"
+	exit 0
 fi
 
-DC=$(echo $DOMAIN| sed 's/^/dc=/' | sed 's/\./,dc=/g')
+if [ x"$LDAP_DOMAIN" == x ]
+then
+	LDAP_DOMAIN=example.com
+fi
+
+DC=$(echo $LDAP_DOMAIN| sed 's/^/dc=/' | sed 's/\./,dc=/g')
 if [ x"$FIRST_USER_LAST_NAME" == x ]
 then
-	FIRST_USER_LAST_NAME=tse
+	FIRST_USER_LAST_NAME=Tse
 fi
 if [ x"$FIRST_USER_FIRST_NAME" == x ]
 then
-	FIRST_USER_FIRST_NAME=simon
+	FIRST_USER_FIRST_NAME=Simon
 fi
 if [ x"$FIRST_USER_LOGIN" == x ]
 then
@@ -32,7 +38,7 @@ section="# ----- [ LDAP ] ----- #"
 echo "$section"
 
 # https://help.ubuntu.com/lts/serverguide/openldap-server.html
-## sudo apt-get remove --purge slapd
+## sudo apt-get -q -y remove --purge slapd
 sudo apt-get -q -y install slapd ldap-utils ldapvi
 
 ## sudo rm -f /etc/phpldapadmin/nginx.conf && sudo apt-get -q -y remove --purge phpldapadmin
@@ -44,24 +50,24 @@ sudo sed -i "s/\$servers->setValue('login','bind_id'.*/\$servers->setValue('logi
 sudo sed -i "s/^.*\$config->custom->appearance\['hide_template_warning'\].*$/\$config->custom->appearance\['hide_template_warning'\] = true;/" /etc/phpldapadmin/config.php
 
 
-if ! [ -f /etc/ssl/certs/$DOMAIN.crt ]
+if ! [ -f /etc/ssl/certs/$LDAP_DOMAIN.crt ]
 then
-	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$DOMAIN.key -out /etc/ssl/certs/$DOMAIN.crt
+	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$LDAP_DOMAIN.key -out /etc/ssl/certs/$LDAP_DOMAIN.crt
 fi
 
 cat <<EOF | sudo tee /etc/phpldapadmin/nginx.conf
 server {
         listen       80;
-        server_name  ldap.$DOMAIN;
+        server_name  ldap.$LDAP_DOMAIN;
         rewrite ^ https://\$http_host\$request_uri? permanent;    # force redirect http to https
 }
 server {
   listen                *:443 ssl;
 
-  server_name           ldap.$DOMAIN;
+  server_name           ldap.$LDAP_DOMAIN;
   ssl                   on;
-  ssl_certificate       /etc/ssl/certs/$DOMAIN.crt;
-  ssl_certificate_key   /etc/ssl/private/$DOMAIN.key;
+  ssl_certificate       /etc/ssl/certs/$LDAP_DOMAIN.crt;
+  ssl_certificate_key   /etc/ssl/private/$LDAP_DOMAIN.key;
   ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
   ssl_session_timeout 5m;
 
@@ -70,7 +76,7 @@ server {
   ssl_prefer_server_ciphers on;
   add_header Strict-Transport-Security max-age=63072000;
 
-  access_log            /var/log/nginx/ssl.ldap.$DOMAIN.access.log main;
+  access_log            /var/log/nginx/ssl.ldap.$LDAP_DOMAIN.access.log main;
   root /usr/share/phpldapadmin/htdocs/;
   index index.php index.html index.htm;
 
@@ -89,8 +95,8 @@ server {
   }
 }
 EOF
-sudo ln -sfn /etc/phpldapadmin/nginx.conf /etc/nginx/sites-available/ldap.$DOMAIN.conf
-sudo ln -sfn /etc/nginx/sites-available/ldap.$DOMAIN.conf /etc/nginx/sites-enabled/ldap.$DOMAIN.conf
+sudo ln -sfn /etc/phpldapadmin/nginx.conf /etc/nginx/sites-available/ldap.$LDAP_DOMAIN.conf
+sudo ln -sfn /etc/nginx/sites-available/ldap.$LDAP_DOMAIN.conf /etc/nginx/sites-enabled/ldap.$LDAP_DOMAIN.conf
 sudo service nginx reload
 
 sudo dpkg-reconfigure slapd
@@ -137,3 +143,6 @@ ldapadd -x -D cn=admin,$DC -W -f $tmp/company.ldif
 
 
 rm -rf $tmp
+
+echo "Visit http://ldap.$LDAP_DOMAIN/ to config users and groups. (You will need to set the DNS of ldap.$LDAP_DOMAIN)"
+
