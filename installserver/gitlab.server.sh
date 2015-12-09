@@ -20,17 +20,29 @@ echo "$section"
 
 # http://doc.gitlab.com/omnibus/docker/
 
+if [ x"$LDAP_DOMAIN" == x ]
+then
+	LDAP_DOMAIN=example.com
+fi
+DC=$(echo $LDAP_DOMAIN| sed 's/^/dc=/' | sed 's/\./,dc=/g')
+
 if [ x"$GIT_HOSTNAME" == x ]
 then
 	GIT_HOSTNAME=git.example.com
 fi
+CERT_HOSTNAME=$GIT_HOSTNAME
+if [ x"$WILDCARD" == x1 ]
+then
+	CERT_HOSTNAME=$(echo $GIT_HOSTNAME | sed 's/^[^.]*\.//')
+fi
+
 if [ x"$HTTPS_CERT" == x ]
 then
-	HTTPS_CERT=/etc/ssl/certs/git.example.com.crt
+	HTTPS_CERT=/etc/ssl/certs/$CERT_HOSTNAME.crt
 fi
 if [ x"$HTTPS_KEY" == x ]
 then
-	HTTPS_KEY=/etc/ssl/private/git.example.com.key
+	HTTPS_KEY=/etc/ssl/private/$CERT_HOSTNAME.key
 fi
 if [ x"$REVERSE_PROXY_HTTP_PORT" == x ]
 then
@@ -46,6 +58,7 @@ read toStopGitlab
 
 if ! [ x"$toStopGitlab" == xY -o x"$toStopGitlab" == xy ]
 then
+	echo "Quit."
 	exit 0
 fi
 
@@ -63,9 +76,10 @@ sudo docker run --detach \
     --volume /srv/gitlab/data:/var/opt/gitlab \
     gitlab/gitlab-ce:latest
 
-"$scriptPath"/../create-self-signed-https-cert.sh $GIT_HOSTNAME
-sudo mv -f ./$GIT_HOSTNAME.crt /etc/ssl/certs/
-sudo mv -f ./$GIT_HOSTNAME.key /etc/ssl/private
+if ! [ -f /etc/ssl/certs/$CERT_HOSTNAME.crt ]
+then
+	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $HTTPS_KEY -out $HTTPS_CERT
+fi
 
 cat <<EOF | sudo tee /srv/gitlab/config/nginx.conf
 server {
@@ -105,10 +119,32 @@ sudo ln -sfn /srv/gitlab/config/nginx.conf /etc/nginx/sites-available/$GIT_HOSTN
 sudo ln -sfn /etc/nginx/sites-available/$GIT_HOSTNAME /etc/nginx/sites-enabled/$GIT_HOSTNAME
 sudo service nginx reload
 
-echo "To configure ldap, this script will open vi for you, and you'll need to write:"
-echo "1) bind_dn: 'cn=name.surname,cn=People,dc=example,dc=com'"
-echo "2) base: 'cn=People,dc=example,dc=com'"
-echo "3) host: 'dockerhost'"
+
+dockerHostIP=$(ifconfig docker0 | grep "inet addr" | sed 's/^[[:space:]]*//' | sed 's/^[^:]*://' | sed 's/  .*$//')
+
+echo "To configure ldap, this script will open vi for you, and you'll need to copy these into config file:"
+cat <<EOF
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block with 'EOS' below
+  main: # 'main' is the GitLab 'provider ID' of this LDAP server
+    label: 'LDAP'
+    host: '$dockerHostIP' #docker host IP here
+    port: 389
+    uid: 'uid'
+    method: 'plain' # "tls" or "ssl" or "plain"
+    bind_dn: 'cn=admin,$DC'
+    password: '***YOUR LDAP ADMIN PASSWORD***'
+    active_directory: true
+    allow_username_or_email_login: true
+    block_auto_created_users: false
+    base: 'ou=Users,$DC'
+    user_filter: ''
+    ## EE only
+    group_base: ''
+    admin_group: ''
+    sync_ssh_keys: false
+EOS
+EOF
 echo -n "Configure ldap usage? (y/n) "
 read configLdap
 if [ x"$configLdap" == x"Y" -o x"$configLdap" == x"y" ]

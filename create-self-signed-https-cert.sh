@@ -8,6 +8,9 @@ fi
 
 domainName="$1"
 
+### sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/$CERT_HOSTNAME.key -out /etc/ssl/certs/$CERT_HOSTNAME.crt
+
+
 tmp=$(mktemp -d /tmp/XXXXXX)
 chmod 700 $tmp
 
