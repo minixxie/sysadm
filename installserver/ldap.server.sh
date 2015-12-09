@@ -46,7 +46,7 @@ sudo apt-get -q -y install phpldapadmin
 sudo sed -i 's/\/bin\/sh/\/bin\/bash/g' /etc/phpldapadmin/templates/creation/posixAccount.xml
 sudo sed -e -i "s/\$server->setValue('server','host'.*$/\$server->setValue('server','host','127.0.0.1');/" /etc/phpldapadmin/config.php
 sudo sed -i "s/\$servers->setValue('server','base'.*/\$servers->setValue('server','base',array('$DC'));/" /etc/phpldapadmin/config.php
-sudo sed -i "s/\$servers->setValue('login','bind_id'.*/\$servers->setValue('login','bind_id',array('cn=admin,$DC'));/" /etc/phpldapadmin/config.php
+sudo sed -i "s/\$servers->setValue('login','bind_id'.*/\$servers->setValue('login','bind_id','cn=admin,$DC');/" /etc/phpldapadmin/config.php
 sudo sed -i "s/^.*\$config->custom->appearance\['hide_template_warning'\].*$/\$config->custom->appearance\['hide_template_warning'\] = true;/" /etc/phpldapadmin/config.php
 
 
