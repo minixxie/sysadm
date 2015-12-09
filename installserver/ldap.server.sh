@@ -121,6 +121,7 @@ loginShell: /bin/bash
 homeDirectory: /home/$FIRST_USER_LOGIN
 EOF
 
+echo "Setup basic Users and Groups, and first user:"
 ldapadd -x -D cn=admin,$DC -W -f $tmp/company.ldif
 
 # sudo ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f logging.ldif
