@@ -20,6 +20,9 @@ then
 fi
 
 DC=$(echo $LDAP_DOMAIN| sed 's/^/dc=/' | sed 's/\./,dc=/g')
+
+CREATE_FIRST_USER=0
+
 if [ x"$FIRST_USER_LAST_NAME" == x ]
 then
 	FIRST_USER_LAST_NAME=Tse
@@ -34,7 +37,7 @@ then
 fi
 
 
-section="# ----- [ LDAP ] ----- #"
+section="# ----- [ LDAP Server ] ----- #"
 echo "$section"
 
 # https://help.ubuntu.com/lts/serverguide/openldap-server.html
@@ -137,6 +140,11 @@ objectClass: posixGroup
 cn: it
 gidNumber: 7001
 
+EOF
+
+if [ $CREATE_FIRST_USER -eq 1 ]
+then
+cat <<EOF >> $tmp/company.ldif
 dn: uid=$FIRST_USER_LOGIN,ou=Users,$DC
 objectClass: inetOrgPerson
 objectClass: posixAccount
@@ -153,6 +161,7 @@ gecos: $FIRST_USER_FIRST_NAME $FIRST_USER_LAST_NAME
 loginShell: /bin/bash
 homeDirectory: /home/$FIRST_USER_LOGIN
 EOF
+fi
 
 echo "Setup basic Users and Groups, and first user:"
 ldapadd -x -D cn=admin,$DC -W -f $tmp/company.ldif
