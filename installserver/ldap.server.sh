@@ -62,7 +62,11 @@ if [ $? -ne 0 ]
 then
 	sudo sed -i  "/if (\$_SESSION\[APPCONFIG\]->isCommandAvailable('cmd','oslinks')) {/a\    printf('<a href=\"/passwd/\" target=\"_blank\" style=\"color:orange;\">Change Password For User</a> | ');" /usr/share/phpldapadmin/htdocs/welcome.php 
 fi
-
+grep "Change Password For User" /usr/share/phpldapadmin/lib/functions.php 2>&1 >/dev/null
+if [ $? -ne 0 ]
+then
+	sudo sed -i "/IMGDIR,_('Home'))),/a\                                'passwd'=>array('title'=>'Change Password For User','enable'=>true,'link'=>'href=\"/passwd/\"','image'=>'')," /usr/share/phpldapadmin/lib/functions.php
+fi
 
 if ! [ -f /etc/ssl/certs/$LDAP_DOMAIN.crt ]
 then
