@@ -135,12 +135,12 @@ dn: ou=Groups,$DC
 objectClass: organizationalUnit
 ou: Groups
 
-dn: cn=IT,ou=Groups,$DC
-objectClass: posixGroup
-cn: it
-gidNumber: 7001
-
 EOF
+
+#dn: cn=IT,ou=Groups,$DC
+#objectClass: posixGroup
+#cn: it
+#gidNumber: 7001
 
 if [ $CREATE_FIRST_USER -eq 1 ]
 then
