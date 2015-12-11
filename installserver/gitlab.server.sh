@@ -108,6 +108,7 @@ server {
   add_header Strict-Transport-Security max-age=63072000;
 
   access_log            /var/log/nginx/ssl.$GIT_HOSTNAME.access.log main;
+  #client_max_body_size 100m; #allow migration of git repositories which normally have large pushes
 
   location / {
     proxy_pass http://127.0.0.1:$REVERSE_PROXY_HTTP_PORT;
