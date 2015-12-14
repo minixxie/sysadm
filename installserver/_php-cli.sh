@@ -18,6 +18,13 @@ echo "$section"
 sudo aptitude -q -y install php5-cli php5-mcrypt php5-imagick php5-mysql php5-gd \
 	php-gettext php5-memcached php5-sqlite php-apc php5-intl php5-curl \
 	>> /var/log/installserver.log 2>&1 
+sudo apt-get -q -y install php-pear
+# phpQuery library, useful for processing XML files
+sudo pear channel-discover pear.querypath.org
+#sudo pear install phpquery/phpQuery
+sudo pear install querypath/QueryPath
+
+
 # install composer (package management tool)
 #cd /usr/local/bin/;
 #curl -s http://getcomposer.org/installer | php
