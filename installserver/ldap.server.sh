@@ -46,7 +46,6 @@ sudo apt-get -q -y install slapd ldap-utils ldapvi
 
 ## sudo rm -f /etc/phpldapadmin/nginx.conf && sudo apt-get -q -y remove --purge phpldapadmin
 sudo apt-get -q -y install phpldapadmin
-sudo sed -i 's/\/bin\/sh/\/bin\/bash/g' /etc/phpldapadmin/templates/creation/posixAccount.xml
 sudo sed -e -i "s/\$server->setValue('server','host'.*$/\$server->setValue('server','host','127.0.0.1');/" /etc/phpldapadmin/config.php
 sudo sed -i "s/\$servers->setValue('server','base'.*/\$servers->setValue('server','base',array('$DC'));/" /etc/phpldapadmin/config.php
 sudo sed -i "s/\$servers->setValue('login','bind_id'.*/\$servers->setValue('login','bind_id','cn=admin,$DC');/" /etc/phpldapadmin/config.php
@@ -54,6 +53,7 @@ sudo sed -i "s/^.*\$config->custom->appearance\['hide_template_warning'\].*$/\$c
 sudo sed -i "s/^.*\$servers->setValue('auto_number','min',.*$/\$servers->setValue('auto_number','min',array('uidNumber'=>8001,'gidNumber'=>7001));/" /etc/phpldapadmin/config.php
 # http://stackoverflow.com/questions/20673186/getting-error-for-setting-password-field-when-creating-generic-user-account-phpl
 sudo sed -i "s/\$default = \$this->getServer()->getValue('appearance','password_hash.*$/\$default = \$this->getServer()->getValue('appearance','password_hash_custom');/" /usr/share/phpldapadmin/lib/TemplateRender.php
+##sudo sed -i "s/^.*\$servers->setValue('appearance','password_hash',.*$/\$servers->setValue('appearance','password_hash','ssha');/' /usr/share/phpldapadmin/config/config.php
 
 # add a change password page for normal user : http://technology.mattrude.com/2010/11/ldap-php-change-password-webpage/
 sudo rm -rf /usr/share/phpldapadmin/htdocs/passwd
@@ -70,6 +70,7 @@ if [ $? -ne 0 ]
 then
 	sudo sed -i "/IMGDIR,_('Home'))),/a\                                'passwd'=>array('title'=>'Change Password For User','enable'=>true,'link'=>'href=\"/passwd/\"','image'=>'')," /usr/share/phpldapadmin/lib/functions.php
 fi
+"$scriptPath"/_modify-phpldapadmin-template.php 
 
 if ! [ -f /etc/ssl/certs/$LDAP_DOMAIN.crt ]
 then
