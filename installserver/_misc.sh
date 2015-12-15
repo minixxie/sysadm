@@ -24,7 +24,7 @@ sudo aptitude -q -y install imagemagick mysql-client zip unzip tofrodos jhead \
 	aria2 dialog wget curl tree rar p7zip-rar vim sysvbanner cmake automake texinfo ctorrent exif \
 	httperf \
 	>> /var/log/installserver.log 2>&1
-sudo aptitude -q -y install docker >> /var/log/installserver.log 2>&1
+wget -qO- https://get.docker.com/ | sh #install docker
 
 sudo pip install shyaml #https://github.com/0k/shyaml
 
