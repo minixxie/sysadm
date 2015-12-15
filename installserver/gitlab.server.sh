@@ -59,6 +59,8 @@ then
 	REVERSE_PROXY_HTTPS_PORT=3001
 fi
 
+#sudo apt-get -q -y install docker
+
 echo -n "This is to stop the gitlab container (if any), are you sure to proceed? (y/n) "
 read toStopGitlab
 
