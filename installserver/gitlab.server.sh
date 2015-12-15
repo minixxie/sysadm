@@ -10,7 +10,7 @@ fi
 
 if [ x"$LDAP_DOMAIN" == x -o x"$GIT_HOSTNAME" == x ]
 then
-	echo "usage: sudo LDAP_DOMAIN=example.com GIT_HOSTNAME=git.example.com $0"
+	echo "usage: sudo LDAP_DOMAIN=example.com GIT_HOSTNAME=git.example.com WILDCARD=1 $0"
 	exit 0
 fi
 
