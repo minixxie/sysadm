@@ -17,5 +17,12 @@ fi
 # https://hub.docker.com/r/mdillon/postgis/
 section="# ----- [ Postgres GIS ] ----- #"
 echo "$section"
+sudo apt-get -q -y install postgresql-client
 sudo docker pull mdillon/postgis
-sudo docker run --name postgis -e POSTGRES_PASSWORD=$ROOT_PASS -d mdillon/postgis
+
+sudo mkdir -p /var/lib/postgresql/data
+sudo chown 999:999 /var/lib/postgresql/data
+sudo chmod 700 /var/lib/postgresql/data
+sudo docker run --name postgis -e POSTGRES_PASSWORD=$ROOT_PASS -p 5432:5432 \
+	-v /var/lib/postgresql/data:/var/lib/postgresql/data \
+	-d mdillon/postgis
