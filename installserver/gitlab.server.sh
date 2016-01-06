@@ -69,6 +69,11 @@ then
 	exit 0
 fi
 
+if ! [ -f $HTTPS_CERT ] 
+then
+	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $HTTPS_KEY -out $HTTPS_CERT
+fi
+
 sudo docker stop gitlab
 sudo docker rm gitlab
 
@@ -81,12 +86,10 @@ sudo docker run --detach \
     --volume /srv/gitlab/config:/etc/gitlab \
     --volume /srv/gitlab/logs:/var/log/gitlab \
     --volume /srv/gitlab/data:/var/opt/gitlab \
+    --volume $HTTPS_CERT:/etc/gitlab/ssl/$GIT_HOSTNAME.crt \
+    --volume $HTTPS_KEY:/etc/gitlab/ssl/$GIT_HOSTNAME.key \
     gitlab/gitlab-ce:latest
 
-if ! [ -f /etc/ssl/certs/$CERT_HOSTNAME.crt ]
-then
-	sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $HTTPS_KEY -out $HTTPS_CERT
-fi
 
 cat <<EOF | sudo tee /srv/gitlab/config/nginx.conf
 server {
@@ -112,7 +115,7 @@ server {
   #client_max_body_size 100m; #allow migration of git repositories which normally have large pushes
 
   location / {
-    proxy_pass http://127.0.0.1:$REVERSE_PROXY_HTTP_PORT;
+    proxy_pass https://127.0.0.1:$REVERSE_PROXY_HTTPS_PORT;
     proxy_http_version 1.1;
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection 'upgrade';
@@ -159,5 +162,12 @@ if [ x"$configLdap" == x"Y" -o x"$configLdap" == x"y" ]
 then
 	# open gitlab config file (ruby source code)
 	sudo docker exec -it gitlab vi +/ldap_enabled /etc/gitlab/gitlab.rb 
+
+	sudo docker exec -it gitlab sed -i "s/^# external_url .*/external_url 'https:\/\/$GIT_HOSTNAME'/" /etc/gitlab/gitlab.rb
+	sudo docker exec -it gitlab sed -i "s/^external_url .*/external_url 'https:\/\/$GIT_HOSTNAME'/" /etc/gitlab/gitlab.rb
+
+	sudo docker exec -it gitlab sed -i "s/^# nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
+	sudo docker exec -it gitlab sed -i "s/^nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
+
 	sudo docker restart gitlab 
 fi
