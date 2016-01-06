@@ -40,8 +40,14 @@ sudo docker run \
   --volume=/var/lib/mongodb:/data/db \
   --volume=/etc/mongod.conf:/mongod.conf \
   --name=mongodb \
-  mongo mongod -f /mongod.conf
+  mongo mongod -f /mongod.conf \
+  --replSet "rs0"
 sudo apt-get -q -y install mongodb-clients
+sudo mongo <<EOF
+rs.initiate();
+EOF
+# https://github.com/meteor/meteor/wiki/Oplog-Observe-Driver
+echo "Visit https://github.com/meteor/meteor/wiki/Oplog-Observe-Driver to read more about setting up the oplogger mongo account and MONGO_OPLOG_URL for meteor projects."
 
 else #USE_DOCKER=0 ####################################################
 
