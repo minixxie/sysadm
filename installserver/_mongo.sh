@@ -54,6 +54,8 @@ sudo docker run \
   mongo mongod -f /mongod.conf \
   --replSet "rs0"
 
+sleep 3s;
+
 sudo mongo <<EOF
 rs.initiate();
 EOF
