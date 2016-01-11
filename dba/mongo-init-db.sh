@@ -42,9 +42,9 @@ dialog --backtitle "System Administration Tool" --title "Create Mongo Database a
 --form "\n* siteUserAdmin is for login, if login is not needed:\n  set both siteUserAdmin & siteUserAdmin to empty\n* Will create DB user (password is randomly generated)\n* Will create DB name" 25 70 16 \
 "siteUserAdmin(user):" 1 1 "$siteUserAdmin_user" 1 25 35 30 \
 "siteUserAdmin(pass):" 2 1 "$siteUserAdmin_pass" 2 25 35 80 \
-"DB user(user):" 3 1 "$dbUser_user" 3 25 35 30 \
+"DB user(user):" 3 1 "$dbUser_user" 3 25 35 40 \
 "DB user(pass):" 4 1 "$dbUser_pass" 4 25 35 80 \
-"DB name:" 5 1 "$dbName" 5 25 35 30 \
+"DB name:" 5 1 "$dbName" 5 25 35 40 \
 "role:" 6 1 "$role" 6 25 35 30 \
 2> $tmpfile
 	if [ $? -eq 0 ]
