@@ -31,7 +31,10 @@ then
 
 set -e
 sudo mkdir -p /var/lib/mongodb  #for db files
-echo "dbpath=/data/db" | sudo tee /etc/mongod.conf  #for db config
+cat <<EOF | sudo tee /etc/mongod.conf  #for db config
+dbpath=/data/db
+#auth=true
+EOF
 
 sudo docker pull mongo:latest
 set +e
