@@ -90,9 +90,16 @@ then
 	then
 		mongo="mongo"
 	fi
+
+dropDB="db.dropDatabase();"
+if [ $dbName == "local" ]
+then
+	dropDB=""
+fi
+
 	$mongo << EOF
 use $dbName;
-db.dropDatabase();
+$dropDB
 use $dbName;
 db.dropUser("$dbUser_user");
 	db.createUser({
