@@ -91,16 +91,19 @@ then
 		mongo="mongo"
 	fi
 
-dropDB="db.dropDatabase();"
+dropDB1="db.dropDatabase();"
+dropDB2="use $dbName;"
+
 if [ $dbName == "local" ]
 then
-	dropDB=""
+	dropDB1=""
+	dropDB2="use admin"
 fi
 
 	$mongo << EOF
 use $dbName;
-$dropDB
-use $dbName;
+$dropDB1
+$dropDB2
 db.dropUser("$dbUser_user");
 	db.createUser({
 		user:"$dbUser_user",pwd:"$dbUser_pass",
