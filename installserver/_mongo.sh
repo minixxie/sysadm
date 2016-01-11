@@ -15,6 +15,11 @@ sudo chmod 666 /var/log/installserver.log
 section="# ----- [ MongoDB ] ----- #"
 echo "$section"
 
+if [ x"$ACCESS_FROM_INTERNET" == x ]
+then
+	ACCESS_FROM_INTERNET=0
+fi
+
 # ref: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 >> /var/log/installserver.log 2>&1
 echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
@@ -33,10 +38,16 @@ set +e
 sudo docker rm -f mongodb
 set -e
 
+bindIP="127.0.0.1"
+if [ $ACCESS_FROM_INTERNET -eq 1 ]
+then
+	bindIP="0.0.0.0"
+fi
+
 sudo docker run \
   -d \
   --restart=always \
-  --publish=127.0.0.1:27017:27017 \
+  --publish=$bindIP:27017:27017 \
   --volume=/var/lib/mongodb:/data/db \
   --volume=/etc/mongod.conf:/mongod.conf \
   --name=mongodb \
