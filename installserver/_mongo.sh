@@ -42,6 +42,17 @@ sudo docker run \
   --name=mongodb \
   mongo mongod -f /mongod.conf \
   --replSet "rs0"
+
+sudo mkdir -p /opt/mongodb-single/data
+echo "dbpath=/data/db" | sudo tee /etc/mongod.conf  #for db config
+sudo docker run \
+  -d \
+  --restart=always \
+  --publish=127.0.0.1:27018:27017 \
+  --volume=/opt/mongodb-single/data:/data/db \
+  --volume=/opt/mongodb-single/mongod.conf:/mongod.conf \
+  --name=mongodb \
+  mongo mongod -f /mongod.conf 
 sudo mongo <<EOF
 rs.initiate();
 EOF
