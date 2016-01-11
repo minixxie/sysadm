@@ -42,7 +42,6 @@ sudo docker run \
   --name=mongodb \
   mongo mongod -f /mongod.conf \
   --replSet "rs0"
-sudo apt-get -q -y install mongodb-clients
 sudo mongo <<EOF
 rs.initiate();
 EOF
