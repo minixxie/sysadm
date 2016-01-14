@@ -13,7 +13,7 @@ if [ x"$MYSQL_ROOT_PASS" != x ]
 then
 	mysqlRootPass="$MYSQL_ROOT_PASS"
 fi
-if [ x"$CONTAINER_NAME" != x ]
+if [ x"$CONTAINER_NAME" == x ]
 then
 	CONTAINER_NAME="mariadb"
 fi
