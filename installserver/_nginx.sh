@@ -18,7 +18,20 @@ echo "$section"
 if [ x$USE_DOCKER != x -a x$USE_DOCKER == x1 ]
 then
 
-sudo docker pull richarvey/nginx-php-fpm:latest >> /var/log/installserver.log 2>&1
+HTTPS_CERTS_FOLDER=
+if [ x"$HTTPS_CERTS_FOLDER" != x ]
+then
+	MOUNT_CERTS="-v $HTTPS_CERTS_FOLDER:/etc/nginx/certs"
+fi
+
+#sudo docker pull richarvey/nginx-php-fpm:latest >> /var/log/installserver.log 2>&1
+curl -sL https://github.com/jwilder/docker-gen/releases/download/0.5.0/docker-gen-linux-amd64-0.5.0.tar.gz | sudo tar -xz -C /usr/local/bin
+sudo docker pull jwilder/nginx-proxy
+sudo docker run --name nginx-proxy -d -p 80:80 -p 443:443 \
+	$MOUNT_CERTS -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
+cd ~ ; git clone https://github.com/jwilder/docker-gen.git
+sudo docker-gen -only-exposed -watch -notify "/etc/init.d/nginx reload" docker-gen/templates/nginx.tmpl /etc/nginx/sites-enabled/default
+
 
 
 
