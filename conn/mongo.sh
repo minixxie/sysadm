@@ -38,7 +38,12 @@ sshHost="$uri_host"
 sshPort=${uri_port:-22}
 sshPath=$(basename "$uri_path")
 
-ssh $sshUser@$sshHost -p $sshPort -t "mongo -u $mongoUser -p$mongoPass $mongoHost:$mongoPort/$mongoPath"
+sshUserAndHost=$sshUser@$sshHost
+if [ x$sshUser == x ]
+then
+	sshUserAndHost=$sshHost
+fi
+ssh $sshUserAndHost -p $sshPort -t "mongo -u $mongoUser -p$mongoPass $mongoHost:$mongoPort/$mongoPath"
 
 else
 	mongo -u $mongoUser -p$mongoPass $mongoHost:$mongoPort/$mongoPath

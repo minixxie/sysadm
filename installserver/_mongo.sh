@@ -29,17 +29,16 @@ sudo aptitude -q -y install mongodb-org-shell mongodb-org-tools mongodb-org-mong
 if [ x$USE_DOCKER != x -a $USE_DOCKER -eq 1 ] #########################
 then
 
-set -e
-sudo mkdir -p /var/lib/mongodb  #for db files
-cat <<EOF | sudo tee /etc/mongod.conf  #for db config
+sudo mkdir -p /opt/mongo/data/ /opt/mongo/etc/
+sudo chown -R 999:999 /opt/mongo/data/
+
+cat <<EOF | sudo tee /opt/mongo/etc/mongod.conf  #for db config
 dbpath=/data/db
 #auth=true
 EOF
 
 sudo docker pull mongo:latest
-set +e
-sudo docker rm -f mongodb
-set -e
+sudo docker rm -f mongo
 
 bindIP="127.0.0.1"
 if [ $ACCESS_FROM_INTERNET -eq 1 ]
@@ -47,15 +46,11 @@ then
 	bindIP="0.0.0.0"
 fi
 
-sudo docker run \
-  -d \
-  --restart=always \
+sudo docker run -d --restart=always --name=mongo \
   --publish=$bindIP:27017:27017 \
-  --volume=/var/lib/mongodb:/data/db \
-  --volume=/etc/mongod.conf:/mongod.conf \
-  --name=mongodb \
-  mongo mongod -f /mongod.conf \
-  --replSet "rs0"
+  --volume=/opt/mongo/data:/data/db \
+  --volume=/opt/mongo/etc/mongod.conf:/mongod.conf \
+  mongo mongod -f /mongod.conf --replSet "rs0"
 
 sleep 3s;
 
