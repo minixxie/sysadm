@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ x"$mongo" == x ]
+then
+	mongo=mongo
+fi
 dialog=$(which dialog)
 if [ x$dialog == x ]
 then
@@ -61,7 +65,7 @@ then
 	siteUserAdmin_pass=$(cat $tmpfile | head -n 2 | tail -n 1)
 
 	
-	mongo admin << EOF
+	$mongo admin << EOF
 use admin
 db.createUser({
 		user:"$siteUserAdmin_user",pwd:"$siteUserAdmin_pass",

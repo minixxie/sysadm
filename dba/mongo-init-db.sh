@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ x"$mongo" == x ]
+then
+	mongo="mongo"
+fi
 dialog=$(which dialog)
 if [ x$dialog == x ]
 then
@@ -85,10 +89,10 @@ then
 	role=$(cat $tmpfile | head -n 6 | tail -n 1)
 
 	
-	mongo="mongo admin -u$siteUserAdmin_user -p$siteUserAdmin_pass"
+	mongo="$mongo admin -u$siteUserAdmin_user -p$siteUserAdmin_pass"
 	if [ x$siteUserAdmin_user == x -o x$siteUserAdmin_pass == x ]
 	then
-		mongo="mongo"
+		mongo="$mongo"
 	fi
 
 dropDB1="db.dropDatabase();"
