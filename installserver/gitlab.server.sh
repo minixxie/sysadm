@@ -173,6 +173,7 @@ then
 	sudo docker exec -it gitlab sed -i "s/^# nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
 	sudo docker exec -it gitlab sed -i "s/^nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
 	sudo docker exec -it gitlab sed -i "s/^gitlab_rails\['gitlab_shell_ssh_port'\].*/gitlab_rails\['gitlab_shell_ssh_port'\] = $GIT_SSH_PORT/" /etc/gitlab/gitlab.rb
+	sudo docker exec -it gitlab sed -i "s/^# gitlab_rails\['gitlab_shell_ssh_port'\].*/gitlab_rails\['gitlab_shell_ssh_port'\] = $GIT_SSH_PORT/" /etc/gitlab/gitlab.rb
 
 	sudo docker restart gitlab 
 fi
