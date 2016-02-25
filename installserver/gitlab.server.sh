@@ -58,6 +58,10 @@ if [ x"$REVERSE_PROXY_HTTPS_PORT" == x ]
 then
 	REVERSE_PROXY_HTTPS_PORT=3001
 fi
+if [ x"$GIT_SSH_PORT" == x ]
+then
+	GIT_SSH_PORT=2222
+fi
 
 
 echo -n "This is to stop the gitlab container (if any), are you sure to proceed? (y/n) "
@@ -80,7 +84,7 @@ sudo docker rm gitlab
 sudo docker pull gitlab/gitlab-ce
 sudo docker run --detach \
     --hostname $GIT_HOSTNAME \
-    --publish $REVERSE_PROXY_HTTPS_PORT:443 --publish $REVERSE_PROXY_HTTP_PORT:80 --publish 15222:22 \
+    --publish $REVERSE_PROXY_HTTPS_PORT:443 --publish $REVERSE_PROXY_HTTP_PORT:80 --publish $GIT_SSH_PORT:22 \
     --name gitlab \
     --restart always \
     --volume /srv/gitlab/config:/etc/gitlab \
@@ -168,6 +172,7 @@ then
 
 	sudo docker exec -it gitlab sed -i "s/^# nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
 	sudo docker exec -it gitlab sed -i "s/^nginx\['redirect_http_to_https'\].*/nginx\['redirect_http_to_https'\] = true/" /etc/gitlab/gitlab.rb
+	sudo docker exec -it gitlab sed -i "s/^gitlab_rails\['gitlab_shell_ssh_port'\].*/gitlab_rails\['gitlab_shell_ssh_port'\] = $GIT_SSH_PORT/" /etc/gitlab/gitlab.rb
 
 	sudo docker restart gitlab 
 fi
